@@ -10,14 +10,15 @@ generator client {
 }
 
 model Course {
-    id        String     @id @default(uuid())
+    id        String  @id @default(uuid())
     userId    String
-    title     String     @db.Text
-    imageUrl  String     @db.Text
-    price     Float
-    category  String     @db.Text
-    chapters  Chapter[]
-    purchases Purchase[]
+    title     String  @db.Text
+    category  String  @db.Text
+    imageUrl  String? @db.Text
+    price     Float?
+    isPublish Boolean @default(false)
+
+    chapters Chapter[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -26,21 +27,23 @@ model Course {
 }
 
 model Chapter {
-    id    String @id @default(uuid())
-    title String
-
-    videoUrl String? @db.Text
-
-    isFree Boolean @default(false)
-
-    muxData MuxData?
+    id        String  @id @default(uuid())
+    title     String
+    isFree    Boolean @default(false)
+    isPublish Boolean @default(false)
+    position  Int
 
     courseId String
     course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-    userProgress UserProgress[]
+    attachments Attachment[]
 
-    quiz Quiz[]
+    video  Video[]
+    audio  Audio[]
+    fillIn FillInExercise[]
+
+    userProgress UserProgress[]
+    quiz         Quiz[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -48,25 +51,71 @@ model Chapter {
     @@index([courseId])
 }
 
-model Quiz {
-    id        String   @id @default(uuid())
-    question  String
-    options   Json?
-    isCorrect Boolean?
+model Video {
+    id  String @id @default(uuid())
+    url String @db.Text
 
     chapterId String
     chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     @@index([chapterId])
 }
 
-model MuxData {
-    id         String  @id @default(uuid())
-    assetId    String
-    playbackId String?
+model Audio {
+    id  String @id @default(uuid())
+    url String @db.Text
 
-    chapterId String  @unique
+    chapterId String
     chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([chapterId])
+}
+
+model FillInExercise {
+    id          String @id @default(uuid())
+    content     String @db.Text
+    fillInWords String @db.Text
+
+    chapterId String
+    chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([chapterId])
+}
+
+model Attachment {
+    id  String @id @default(uuid())
+    url String @db.Text
+
+    chapterId String
+    chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([chapterId])
+}
+
+model Quiz {
+    id      String @id @default(uuid())
+    word    String
+    meaning String
+
+    chapterId String
+    chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([chapterId])
 }
 
 model UserProgress {
@@ -83,27 +132,4 @@ model UserProgress {
 
     @@unique([userId, chapterId])
     @@index([chapterId])
-}
-
-model Purchase {
-    id     String @id @default(uuid())
-    userId String
-
-    courseId String
-    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt()
-
-    @@unique([userId, courseId])
-    @@index([courseId])
-}
-
-model StripeCustomer {
-    id               String @id @default(uuid())
-    userId           String @unique
-    stripeCustomerId String @unique
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }

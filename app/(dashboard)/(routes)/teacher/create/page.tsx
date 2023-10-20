@@ -3,8 +3,11 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -21,40 +24,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UploadButton } from "@uploadthing/react";
-import { OurFileRouter } from "@/app/api/uploadthing/core";
-import { useState } from "react";
-import Link from "next/link";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
-import { formCourseSchema } from "@/app/validationSchema";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
-const categories = ["Listening", "Reading", "Writing", "Speaking"];
+export const categories = ["Listening", "Reading", "Writing", "Speaking"];
+
+const formCourseSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title is required",
+  }),
+  category: z.string().min(1, {
+    message: "Category is required",
+  }),
+});
 
 type Input = z.infer<typeof formCourseSchema>;
 
-const CreateCourse = () => {
+const CourseForm = () => {
   const router = useRouter();
-  const [image, setImage] = useState<{ url: string }[]>([]);
-  const [chapters, setChapters] = useState<string[]>([]);
 
   const form = useForm<Input>({
     resolver: zodResolver(formCourseSchema),
     defaultValues: {
       title: "",
-      price: 0,
-      imageUrl: "",
       category: "",
-      chapters: [],
     },
   });
 
   const onSubmit = async (data: Input) => {
     try {
-      await axios.post("/api/courses", data);
-      router.push("/teacher/chapter");
+      const response = await axios.post("/api/courses", data);
+      router.push(`/teacher/courses/${response.data.id}`);
       toast.success("New course created");
       router.refresh();
     } catch (error) {
@@ -64,11 +63,13 @@ const CreateCourse = () => {
 
   return (
     <div className="flex flex-col items-center mt-8">
-      <div>Course setup</div>
+      <div className="p-2 text-2xl font-semibold text-primary">
+        Create a course
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col justify-start gap-10 w-[70%] md:max-w-xl"
+          className="flex flex-col justify-start gap-8 w-[70%] md:max-w-xl mt-4"
         >
           <FormField
             control={form.control}
@@ -82,20 +83,6 @@ const CreateCourse = () => {
                     {...field}
                     className="capitalize"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input placeholder="price..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,73 +117,20 @@ const CreateCourse = () => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <div className="flex text-sm items-start">
-                    <UploadButton<OurFileRouter>
-                      endpoint="courseImage"
-                      onClientUploadComplete={(res) => {
-                        if (res) {
-                          setImage(res);
-                          form.setValue("imageUrl", res[0].url);
-                        }
-                      }}
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                {image.length > 0 && (
-                  <Link
-                    href={image[0].url}
-                    target="_blank"
-                    className="text-sm text-slate-600"
-                  >
-                    {image[0].url}
-                  </Link>
-                )}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="chapters"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Chapters</FormLabel>
-                <FormControl>
-                  {chapters.map((chapter, index) => (
-                    <div
-                      key={index}
-                      onClick={() => router.push(`/teacher/chapter/${chapter}`)}
-                    >
-                      {chapter.isFree && (
-                        <Badge
-                          variant="outline"
-                          className="bg-slate-500 text-white"
-                        >
-                          Free
-                        </Badge>
-                      )}
-                    </div>
-                  ))}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit">Create a course</Button>
+          <div className="flex items-center gap-x-4 justify-center mt-2">
+            <Link href="/">
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </Link>
+            <Button size="lg" type="submit">
+              Continue
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
   );
 };
 
-export default CreateCourse;
+export default CourseForm;
