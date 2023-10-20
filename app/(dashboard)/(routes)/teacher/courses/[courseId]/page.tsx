@@ -2,7 +2,6 @@ import { Banner } from "@/components/banner";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import Publish from "./chapters/[chapterId]/_components/chapter-publish";
 
 import CategoryForm from "./_components/category";
 import ChaptersForm from "./_components/chapters";
