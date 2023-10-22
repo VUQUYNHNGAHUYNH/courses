@@ -56,12 +56,12 @@ const CategoryForm = ({ initialData, courseId }: FormProps) => {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium">Category</div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex gap-x-4 justify-start items-center w-full"
+          className="flex gap-x-4 justify-start items-center w-full mt-2"
         >
           <FormField
             control={form.control}

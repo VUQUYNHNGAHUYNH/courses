@@ -17,23 +17,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Course } from "@prisma/client";
 import { useState } from "react";
+import { formatPrice } from "@/lib/format-price";
 
 interface FormProps {
-  initialData: {
-    title: string;
-    category: string;
-  };
+  initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title is required",
-  }),
+  price: z.coerce.number(),
 });
 
-const TitleForm = ({ initialData, courseId }: FormProps) => {
+const PriceForm = ({ initialData, courseId }: FormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -41,7 +38,7 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { price: initialData.price || undefined },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -49,7 +46,7 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Title updated");
+      toast.success("Price updated");
       toggleEdit();
       router.refresh();
     } catch {
@@ -60,7 +57,7 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
   return (
     <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Title
+        Price
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -79,11 +76,11 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type="number" step="10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,10 +97,10 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
           </form>
         </Form>
       ) : (
-        <p className="capitalize">{initialData.title}</p>
+        <p>{initialData.price ? formatPrice(initialData.price) : "No price"}</p>
       )}
     </div>
   );
 };
 
-export default TitleForm;
+export default PriceForm;

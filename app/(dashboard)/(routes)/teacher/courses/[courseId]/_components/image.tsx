@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { Course } from "@prisma/client";
 import Image from "next/image";
 import { FileUpload } from "@/components/file-upload";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { FileEdit } from "lucide-react";
 
 interface FormProps {
   initialData: Course;
@@ -20,12 +23,16 @@ const formSchema = z.object({
 });
 
 const TitleForm = ({ initialData, courseId }: FormProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const toggleEdit = () => setIsEditing((current) => !current);
+
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success("Image updated");
+      toggleEdit();
       router.refresh();
     } catch {
       toast.error("Something went wrong");
@@ -33,9 +40,20 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
   };
 
   return (
-    <div className="space-y-2">
-      <div className="font-medium">Image</div>
-      {!initialData.imageUrl ? (
+    <div className="mt-6 border rounded-md p-4">
+      <div className="font-medium flex items-center justify-between">
+        Course image
+        <Button onClick={toggleEdit} variant="ghost">
+          {isEditing && <>Cancel</>}
+          {!isEditing && initialData.imageUrl && (
+            <>
+              <FileEdit className="h-4 w-4 mr-2" />
+              Edit
+            </>
+          )}
+        </Button>
+      </div>
+      {isEditing && (
         <FileUpload
           endpoint="courseImage"
           onChange={(url) => {
@@ -44,7 +62,9 @@ const TitleForm = ({ initialData, courseId }: FormProps) => {
             }
           }}
         />
-      ) : (
+      )}
+
+      {!isEditing && initialData.imageUrl && (
         <div className="relative aspect-video mt-4">
           <Image
             alt="Upload"

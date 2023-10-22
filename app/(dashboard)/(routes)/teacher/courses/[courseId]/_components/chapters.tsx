@@ -63,13 +63,13 @@ const ChaptersForm = ({ initialData, courseId }: ChapterFormProps) => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium">Chapters</div>
       {isCreating && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex items-center gap-x-3 justify-start"
+            className="flex items-center gap-x-3 justify-start my-4"
           >
             <FormField
               control={form.control}

@@ -18,7 +18,8 @@ model Course {
     price     Float?
     isPublish Boolean @default(false)
 
-    chapters Chapter[]
+    chapters  Chapter[]
+    purchases Purchase[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -132,4 +133,27 @@ model UserProgress {
 
     @@unique([userId, chapterId])
     @@index([chapterId])
+}
+
+model Purchase {
+    id     String @id @default(uuid())
+    userId String
+
+    courseId String
+    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+
+    @@unique([userId, courseId])
+    @@index([courseId])
+}
+
+model StripeCustomer {
+    id               String @id @default(uuid())
+    userId           String @unique
+    stripeCustomerId String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
