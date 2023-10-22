@@ -84,15 +84,14 @@ const ChapterIdPage = async ({
           label="This chapter is unpublished. It will not be visible in the course."
         />
       )}
-      <div>
+      <div className="flex flex-col items-center justify-center md:ml-16 p-4 gap-y-4">
         <Link
           href={`/teacher/courses/${params.courseId}`}
-          className="flex items-center text-md hover:text-slate-800 transition"
+          className="flex text-sm hover:text-slate-600 transition"
         >
           <ArrowBigLeftDash className="h-5 w-5 mr-1" />
           Back to course setup
         </Link>
-
         <div className="flex items-center justify-between w-full">
           <div className="flex flex-col gap-y-2">
             <h1 className="text-2xl font-semibold text-primary">
@@ -109,41 +108,48 @@ const ChapterIdPage = async ({
             isPublish={chapter.isPublish}
           />
         </div>
-        <ChapterTitle
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterQuiz
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterAudio
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterVideo
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterAttachment
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterExercise
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
-        <ChapterAcess
-          initialData={chapter}
-          courseId={params.courseId}
-          chapterId={params.chapterId}
-        />
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 space-y-10 xl:space-y-0 xl:space-x-16 w-full">
+          <div className="space-y-8">
+            <ChapterTitle
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            <ChapterAcess
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            <ChapterQuiz
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            <ChapterAudio
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            <ChapterAttachment
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+          </div>
+          <div className="space-y-8">
+            <ChapterVideo
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            <ChapterExercise
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

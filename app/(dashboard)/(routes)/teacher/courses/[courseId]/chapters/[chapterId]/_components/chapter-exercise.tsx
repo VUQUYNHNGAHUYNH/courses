@@ -80,12 +80,12 @@ const ChapterExercise = ({
   };
 
   return (
-    <div className="py-8">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium">Chapter Exercises</div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="px-8 flex flex-col gap-y-4 justify-center items-start w-full"
+          className="flex flex-col gap-y-4 justify-center items-start w-full mt-4"
         >
           <FormField
             control={form.control}
@@ -93,7 +93,7 @@ const ChapterExercise = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Content</FormLabel>
-                <FormControl className="w-full">
+                <FormControl>
                   <Textarea {...field} placeholder="Type your content here." />
                 </FormControl>
                 <FormMessage />
@@ -126,24 +126,37 @@ const ChapterExercise = ({
       {initialData.fillIn &&
         initialData.fillIn.length > 0 &&
         initialData.fillIn.map((item) => (
-          <div key={item.id}>
-            {item.content}
-            <p className="font-medium">List of words to fill in blanks:</p>
-            {item.fillInWords.split(",").map((word, index) => (
-              <div key={index}>{word}</div>
-            ))}
+          <div key={item.id} className="text-sm mt-6 p-3 bg-gray-50 rounded-md">
+            <div>{item.content}</div>
+            <div className="mt-4">
+              <p className="font-medium mb-2">
+                List of words to fill in blanks:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {item.fillInWords.split(",").map((word, index) => (
+                  <div
+                    key={index}
+                    className="px-2 py-1 bg-white text-gray-800 rounded-md shadow-md"
+                  >
+                    {word}
+                  </div>
+                ))}
+              </div>
+            </div>
             {deletingId === item.id && (
-              <div>
+              <div className="mt-4">
                 <Loader2 className="h-4 w-4 animate-spin" />
               </div>
             )}
             {deletingId !== item.id && (
-              <button
+              <Button
                 onClick={() => onDelete(item.id)}
-                className="ml-auto hover:text-red-500 transition"
+                className="mt-2 text-red-500 hover:text-white hover:bg-red-400 transition"
+                variant="outline"
+                size="sm"
               >
                 <Trash className="h-4 w-4" />
-              </button>
+              </Button>
             )}
           </div>
         ))}

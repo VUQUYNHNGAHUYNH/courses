@@ -25,6 +25,29 @@ export const columns: ColumnDef<Course>[] = [
     },
   },
   {
+    accessorKey: "price",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const price = parseFloat(row.getValue("price") || "0");
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(price);
+
+      return <div>{formatted}</div>;
+    },
+  },
+  {
     accessorKey: "isPublish",
     header: ({ column }) => {
       return (
@@ -55,7 +78,7 @@ export const columns: ColumnDef<Course>[] = [
       return (
         <Link
           href={`/teacher/courses/${id}`}
-          className="flex gap-x items-center"
+          className="flex gap-x items-center justify-center"
         >
           <FileEdit className="h-4 w-4 mr-2" />
           Edit

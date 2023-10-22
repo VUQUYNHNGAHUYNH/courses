@@ -67,10 +67,10 @@ const ChapterAttachment = ({
   };
 
   return (
-    <div>
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Attachments
-        <Button onClick={toggleEdit}>
+        <Button onClick={toggleEdit} variant="outline" size="sm">
           {isEditing ? (
             <>Cancel</>
           ) : (

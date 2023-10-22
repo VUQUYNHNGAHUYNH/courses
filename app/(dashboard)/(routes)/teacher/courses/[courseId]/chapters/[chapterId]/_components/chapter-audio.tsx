@@ -70,10 +70,10 @@ const ChapterAudio = ({
     }
   };
   return (
-    <div className="mt-6  p-4">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Chapter Audio
-        <Button onClick={toggleEdit}>
+        <Button onClick={toggleEdit} variant="outline" size="sm">
           {isEditing ? (
             <>Cancel</>
           ) : (
@@ -97,7 +97,7 @@ const ChapterAudio = ({
       {initialData.audio && initialData.audio.length > 0 && (
         <div>
           {initialData.audio.map((item) => (
-            <div key={item.id}>
+            <div key={item.id} className="flex gap-x-4 mt-4">
               <AudioPlayer src={item.url} />
               {deletingId === item.id && (
                 <div>
@@ -105,12 +105,16 @@ const ChapterAudio = ({
                 </div>
               )}
               {deletingId !== item.id && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  className="ml-auto hover:text-red-500 transition"
-                >
-                  <Trash className="h-4 w-4" />
-                </button>
+                <div className=" flex justify-center items-center">
+                  <Button
+                    onClick={() => onDelete(item.id)}
+                    className="mt-4 text-red-500 hover:text-white hover:bg-red-400 transition"
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
               )}
             </div>
           ))}

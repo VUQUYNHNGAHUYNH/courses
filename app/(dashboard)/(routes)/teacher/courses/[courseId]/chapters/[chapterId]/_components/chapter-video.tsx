@@ -61,10 +61,10 @@ const ChapterVideo = ({
     }
   };
   return (
-    <div className="mt-6  p-4">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Chapter video
-        <Button onClick={toggleEdit}>
+        <Button onClick={toggleEdit} variant="outline">
           {isEditing ? (
             <>Cancel</>
           ) : (
@@ -88,20 +88,23 @@ const ChapterVideo = ({
       {initialData.video && initialData.video.length > 0 && (
         <div>
           {initialData.video.map((item) => (
-            <div key={item.id}>
+            <div key={item.id} className="flex flex-col gap-y-2 mt-6">
               <video src={item.url} controls></video>
+
+              {deletingId !== item.id && (
+                <Button
+                  onClick={() => onDelete(item.id)}
+                  className="ml-auto text-red-500 hover:text-white hover:bg-red-400 transition"
+                  variant="outline"
+                  size="sm"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              )}
               {deletingId === item.id && (
                 <div>
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </div>
-              )}
-              {deletingId !== item.id && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  className="ml-auto hover:text-red-500 transition"
-                >
-                  <Trash className="h-4 w-4" />
-                </button>
               )}
             </div>
           ))}

@@ -1,3 +1,4 @@
+import SearchInput from "@/components/search-input";
 import { db } from "@/lib/db";
 import { Course } from "@prisma/client";
 
@@ -26,8 +27,11 @@ const Home = async () => {
     },
   });
 
-  
-  return <div>Home</div>;
+  return (
+    <div>
+      <SearchInput />
+    </div>
+  );
 };
 
 export default Home;

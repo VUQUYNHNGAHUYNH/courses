@@ -17,7 +17,7 @@ const CoursesPage = async () => {
   });
 
   return (
-    <div>
+    <div className="md:ml-12 p-8">
       <DataTable columns={columns} data={courses} />
     </div>
   );

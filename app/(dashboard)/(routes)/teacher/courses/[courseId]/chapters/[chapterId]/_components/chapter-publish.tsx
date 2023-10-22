@@ -59,7 +59,11 @@ const ChapterPublish = ({
       </Button>
 
       <ConfirmModal onConfirm={onDelte}>
-        <Button size="sm" variant="destructive">
+        <Button
+          size="sm"
+          variant="outline"
+          className="text-red-500 hover:text-white hover:bg-red-400 transition"
+        >
           <Trash className="h-4 w-4" />
         </Button>
       </ConfirmModal>

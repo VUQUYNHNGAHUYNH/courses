@@ -77,22 +77,21 @@ const ChapterQuiz = ({
     }
   };
   return (
-    <div className="space-y-2 mt-4 w-full p-8">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium">Chapter Quiz</div>
-      <div className="flex flex-col gap-y-4 justify-center items-center">
+      <div className="flex flex-col gap-y-4 justify-center items-center mt-4">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex items-center gap-x-3 justify-center"
+            className="flex items-center gap-x-4 justify-start"
           >
             <FormField
               control={form.control}
               name="word"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New word</FormLabel>
                   <FormControl>
-                    <Input placeholder="word" {...field} />
+                    <Input placeholder="new word" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,7 +103,6 @@ const ChapterQuiz = ({
               name="meaning"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Meaning</FormLabel>
                   <FormControl>
                     <Input placeholder="meaning" {...field} />
                   </FormControl>
@@ -112,29 +110,41 @@ const ChapterQuiz = ({
                 </FormItem>
               )}
             />
-            <Button size="sm" type="submit">
+            <Button size="sm" type="submit" variant="outline">
               <Plus className="h-5 w-5 mr-1" />
               Add
             </Button>
           </form>
         </Form>
 
-        {initialData.quiz.map((item) => (
-          <div key={item.id}>
-            {item.word}: {item.meaning}
-            {deletingId === item.id && (
-              <div>
-                <Loader2 className="h-4 w-4 animate-spin" />
-              </div>
-            )}
-            <button
-              onClick={() => onDelete(item.id)}
-              className="ml-auto hover:text-red-500 transition"
+        <div className="mt-4 border p-4 w-full bg-slate-50 rounded-md">
+          <p className="font-medium mb-2 text-center">Words lists</p>
+          {initialData.quiz.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-around mb-2"
             >
-              <Trash className="h-4 w-4" />
-            </button>
-          </div>
-        ))}
+              <div className="flex-1">
+                <div className="text-sm space-x-2">
+                  <span className="px-4">{index + 1}.</span>
+                  <span className="font-medium">{item.word}:</span>
+                  <span className="text-gray-800">{item.meaning}</span>
+                </div>
+              </div>
+              {deletingId === item.id && (
+                <div>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              )}
+              <button
+                onClick={() => onDelete(item.id)}
+                className="ml-auto text-red-500 hover:text-red-700 transition"
+              >
+                <Trash className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
